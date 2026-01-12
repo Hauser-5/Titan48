@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HAUSER | ABYSS</title>
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  background:#000;
+  font-family:"Courier New",monospace;
+  color:#990000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+#wrap{
+  text-align:center;
+  opacity:0;
+  transition:opacity 2s;
+}
+.time{
+  font-size:2rem;
+  letter-spacing:4px;
+  margin:20px 0;
+}
+.deep{
+  filter:blur(.5px);
+  color:#660000;
+}
+.noise{
+  text-shadow:0 0 1px rgba(255,0,0,.4);
+}
+</style>
+</head>
+
+<body>
+<div id="wrap">
+  <div id="stay" class="time">00:00:00</div>
+  <div id="now" class="time">00:00:00</div>
+</div>
+
+<script>
+const wrap=document.getElementById("wrap");
+const stayEl=document.getElementById("stay");
+const nowEl=document.getElementById("now");
+const start=Date.now();
+
+// 5초 침묵
+setTimeout(()=>{wrap.style.opacity=1;},5000);
+
+setInterval(()=>{
+  const diff=Math.floor((Date.now()-start)/1000);
+  stayEl.innerText=format(diff);
+},1000);
+
+// 현재 시간
+setInterval(()=>{
+  const n=new Date();
+  nowEl.innerText=n.toTimeString().slice(0,8);
+},1000);
+
+// 5분 변화 / 10분 원복
+setInterval(()=>{
+  const t=(Date.now()-start)/60000;
+  if(t>=5 && t<10){
+    wrap.classList.add("deep");
+  }else{
+    wrap.classList.remove("deep");
+  }
+},2000);
+
+// 숫자 불완전성
+setInterval(()=>{
+  if(Math.random()<0.05){
+    stayEl.classList.add("noise");
+    setTimeout(()=>stayEl.classList.remove("noise"),80);
+  }
+},3000);
+
+// 오후 4시 환상
+setInterval(()=>{
+  const h=new Date().getHours();
+  if(h===16){
+    wrap.style.filter="blur(.6px)";
+  }else{
+    wrap.style.filter="none";
+  }
+},5000);
+
+function format(s){
+  const h=String(Math.floor(s/3600)).padStart(2,"0");
+  const m=String(Math.floor((s%3600)/60)).padStart(2,"0");
+  const sec=String(s%60).padStart(2,"0");
+  return `${h}:${m}:${sec}`;
+}
+</script>
+</body>
+</html>
+
